@@ -1,0 +1,5 @@
+Spys...........0
+Auto Save......1
+Log Stats......0
+Player RAM.....15
+Inventory RAM..10
