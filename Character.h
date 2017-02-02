@@ -1,11 +1,21 @@
+#include <stdio.h>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <stdlib.h>
+#include <time.h>
 #include <assert.h>
 #include <random>
-#include <time.h>
+#include <iomanip>
 
-#ifndef PC_H
-#define PC_H
+using namespace std;
+
+#ifndef CHARACTER_H
+#define CHARACTER_H
+
+//==============================
+//	Player Character Class
+//==============================
 
 class PC {
 	string Player;
@@ -24,6 +34,7 @@ class PC {
 	vector<string> Controverse;
 	vector<string> Contraband;
 
+	int Clone;
 	int Skills[6][13];
 	int Degree;
 	int Power[2];
@@ -35,26 +46,43 @@ class PC {
 	vector<int> Unlikely_val;
 	vector<int> Unhealthy_val;
 	public:
-		string getPlayer();
-		string getName(bool);
+		PC();
+		PC(string, string, string);
+		//string getPlayer();
+		//string getName(bool);
 		void displayPC();
-		void displaySkill(int , int);
-
+		//void displaySkill(int, int);
 };
 
-#endif
-/*
+//==============================
+//	Party Class
+//==============================
+
 class Party {
 	vector<PC> party;
-	int size;
 	PC *Team_Leader;
 	PC *Equipment_Guy;
 	PC *Happiness_Officer;
 	PC *CP&RO;
 	PC *Loyalty_Officer;
 	PC *Hygiene_Officer;
+	public:
+		void add_member(PC);
+		void gen_MBD();
 };
+
+//==============================
+//	NPC Class
+//==============================
 
 class NPC {
+	string Name;
+	string Clearance;
+	string Sector;
 
+	int Clone;
+	public:
+		NPC(string,string,string);
 };
+
+#endif
