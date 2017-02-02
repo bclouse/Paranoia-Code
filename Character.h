@@ -46,11 +46,9 @@ class PC {
 	vector<int> Unlikely_val;
 	vector<int> Unhealthy_val;
 	public:
-		PC();
 		PC(string, string, string);
-		//string getPlayer();
-		//string getName(bool);
-		void displayPC();
+		string get_name(bool);
+		void display();
 		//void displaySkill(int, int);
 };
 
@@ -63,7 +61,7 @@ class Party {
 	PC *Team_Leader;
 	PC *Equipment_Guy;
 	PC *Happiness_Officer;
-	PC *CP&RO;
+	PC *CP_RO;
 	PC *Loyalty_Officer;
 	PC *Hygiene_Officer;
 	public:
@@ -84,5 +82,10 @@ class NPC {
 	public:
 		NPC(string,string,string);
 };
+
+//==============================
+//	Functions
+//==============================
+
 
 #endif
