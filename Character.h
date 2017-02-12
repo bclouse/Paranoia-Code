@@ -7,6 +7,10 @@
 #include <assert.h>
 #include <random>
 #include <iomanip>
+#include <fstream>
+
+#define DIRECTORY "assests//"
+#define ROLL rand()%20
 
 using namespace std;
 
@@ -35,20 +39,26 @@ class PC {
 	vector<string> Contraband;
 
 	int Clone;
-	int Skills[6][13];
 	int Degree;
+	int Skills[6][13];
 	int Power[2];
 	int Access[2];
 	int Perversity;
 	int Credits[2];
+	int XP_Char;
+	int XP_SG;
+	int XP_SS;
 
 	vector<int> Uncommon_val;
 	vector<int> Unlikely_val;
 	vector<int> Unhealthy_val;
 	public:
 		PC(string, string, string);
-		string get_name(bool);
-		void display();
+		void Generate(string,string,string);
+		void Get_from_file(ifstream);
+		string Get_name(bool);
+		void Display();
+
 		//void displaySkill(int, int);
 };
 
@@ -57,7 +67,7 @@ class PC {
 //==============================
 
 class Party {
-	vector<PC> party;
+	vector<PC*> party;
 	PC *Team_Leader;
 	PC *Equipment_Guy;
 	PC *Happiness_Officer;
@@ -66,7 +76,9 @@ class Party {
 	PC *Hygiene_Officer;
 	public:
 		void add_member(PC);
+		void del_member(string);
 		void gen_MBD();
+		void display();
 };
 
 //==============================
@@ -79,13 +91,26 @@ class NPC {
 	string Sector;
 
 	int Clone;
+
 	public:
 		NPC(string,string,string);
+};
+
+class Settings {
+	public:
+	bool Spys;
+	bool Auto_Save;
+	bool Log_Stats;
+	bool Command_Prompt;
 };
 
 //==============================
 //	Functions
 //==============================
 
+int str2int(string);
+string get_skill_names(int,int);
+string get_rand_name(ifstream);
+string getM(int);
 
 #endif

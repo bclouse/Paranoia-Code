@@ -1,0 +1,3 @@
+Settings.txt
+Blank_Character.txt
+Character_List.txt
