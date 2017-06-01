@@ -9,8 +9,8 @@
 #include <iomanip>
 #include <fstream>
 
-#define DIRECTORY "assests//"
-#define ROLL rand()%20
+#define DIRECTORY "assets//"
+#define ROLL (int)(rand()%20)+1
 
 using namespace std;
 
@@ -43,11 +43,7 @@ class PC {
 	int Skills[6][13];
 	int Power[2];
 	int Access[2];
-	int Perversity;
 	int Credits[2];
-	int XP_Char;
-	int XP_SG;
-	int XP_SS;
 
 	vector<int> Uncommon_val;
 	vector<int> Unlikely_val;
@@ -55,7 +51,7 @@ class PC {
 	public:
 		PC(string, string, string);
 		void Generate(string,string,string);
-		void Get_from_file(ifstream);
+		void Get_from_file(ifstream&);
 		string Get_name(bool);
 		void Display();
 
@@ -89,11 +85,37 @@ class NPC {
 	string Name;
 	string Clearance;
 	string Sector;
+	string Skill_names[6][12];
+	string Mutant;
+
+	vector<string> Service;
+	vector<string> Society;
+	vector<string> Uncommon_names;
+	vector<string> Unlikely_names;
+	vector<string> Unhealthy_names;
+	vector<string> Common;
+	vector<string> Controverse;
+	vector<string> Contraband;
 
 	int Clone;
+	int Degree;
+	int Skills[6][13];
+	int Power[2];
+	int Access[2];
+	int Perversity;
+	int Credits[2];
+	int XP_Char;
+	int XP_SG;
+	int XP_SS;
+
+	vector<int> Uncommon_val;
+	vector<int> Unlikely_val;
+	vector<int> Unhealthy_val;
 
 	public:
 		NPC(string,string,string);
+		string Get_name(bool);
+		void Display();
 };
 
 class Settings {
@@ -110,7 +132,11 @@ class Settings {
 
 int str2int(string);
 string get_skill_names(int,int);
-string get_rand_name(ifstream);
-string getM(int);
+string get_rand_name(ifstream&);
+string getM();
+vector<string> get_files(ifstream&);
+void get_power(int*);
+string get_service(int*);
+string getSS(int);
 
 #endif

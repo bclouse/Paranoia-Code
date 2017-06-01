@@ -43,6 +43,26 @@ NPC::NPC(string name, string clearance,string sector) {
 		case 7 : Clone = rand()%5+1; break;
 		case 8 : Clone = rand()%6+1; break;
 	}
+
+	Mutant = getM();
+	get_power(Power);
+	Access[0] = Access[1] = ROLL/5;
+}
+
+string NPC::Get_name(bool full_name) {
+	string name;
+	if (full_name) {
+		name = Name+'-'+Clearance+'-'+Sector+'-'+to_string(Clone);
+	} else {
+		name = Name;
+	}
+	return name;
+}
+
+void NPC::Display() {
+	cout << Get_name(true) << endl;
+	cout << "Mutant: " << Mutant << endl;
+	printf("Power: %d/%d\nAccess: %d/%d\n", Power[0],Power[1], Access[0], Access[1]);
 }
 
 //==============================
@@ -60,6 +80,37 @@ int str2int(string input) {
 		}
 	}
 	return output;
+}
+
+string get_rand_name(ifstream& fp) {
+	string test;
+
+	fp.seekg(16*(rand()%2400),ios::beg);
+	fp >> test;
+
+	return test;
+}
+
+vector<string> get_files(ifstream& file) {
+	vector<string> output;
+	string dirname = DIRECTORY, fname;
+
+	while (getline(file,fname)) {
+		output.push_back(dirname+fname);
+	}
+	return output;
+}
+
+void get_power(int* arr) {
+	int dummy = ROLL;
+	if (dummy < 8) {
+		arr[0] = 8;
+	} else if (dummy > 18) {
+		arr[0] = 18;
+	} else {
+		arr[0] = dummy;
+	}
+	arr[1] = arr[0];
 }
 
 string get_skill_names(int main, int sub) {
@@ -141,118 +192,171 @@ string get_skill_names(int main, int sub) {
 	}
 }
 
+string getM() {
+	long int dummy, end;
+	int size = 0;
+	char c, str[50];
 
-string get_rand_name(ifstream file) {
-	string output;
-	long int loc = rand()%2400;
+	FILE *fp = fopen("assets//Mutations.txt","r" );
+	fscanf(fp,"%c", &c);
+	size++;
+	while (c != '\n') {
+		fscanf(fp,"%c", &c);
+		size++;
+	}
+	fseek(fp, 0L, SEEK_END);
+	end = ftell(fp)+1;
 
-	file.seekg(loc*16,ios::beg);
-	getline(file,output);
+	dummy = (rand()%(end/size))*size;
+	fseek(fp, dummy, SEEK_SET);
+	fgets(str,50,fp);
 
+
+	string output = str;
+	for (int i = 0; i < output.size(); i++) {
+		if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
+			output[i] = '\0';
+		} else if (i == output.size()-1) {
+			output[i] = '\0';
+		}
+	}
 	return output;
 }
 
-string getM(int n) {	
-	switch (n) {
-		case 1: return "Not A Mutant"; break;
-		case 2: return "X-Ray Vision"; break;
-		case 3: return "Shapeshift"; break;
-		case 4: return "Charm"; break;
-		case 5: return "Hypersenses"; break;
-		case 6: return "Kinetic Blast"; break;
-		case 7: return "Electroshock"; break;
-		case 8: return "Matter Eater"; break;
-		case 9: return "Adrenaline Control"; break;
-		case 10: return "Kirby Absorption"; break;
-		case 11: return "Acid Spit"; break;
-		case 12: return "Adaptive Metabolism"; break;
-		case 13: return "Adhesive Skin"; break;
-		case 14: return "Bounce"; break;
-		case 15: return "Uncanny Luck"; break;
-		case 16: return "Doom Magnet"; break;
-		case 17: return "Chameleon"; break;
-		case 18: return "Color Touch"; break;
-		case 19: return "Ink Spray"; break;
-		case 20: return "MACHINE EMPATHY"; break;
-		case 21: return "Creeping Madness"; break;
-		case 22: return "Cryokinesis"; break;
-		case 23: return "Play Dead"; break;
-		case 24: return "Deep Thought"; break;
-		case 25: return "Desolidify"; break;
-		case 26: return "Detect Mutant Power"; break;
-		case 27: return "Levitation"; break;
-		case 28: return "Energy Field"; break;
-		case 29: return "Darkness Field"; break;
-		case 30: return "Surrounding Environment Control"; break;
-		case 31: return "Find Location"; break;
-		case 32: return "Forgettable"; break;
-		case 33: return "Gravity Manipulation"; break;
-		case 34: return "Growth"; break;
-		case 35: return "Sensory Haze"; break;
-		case 36: return "Hyperreflexes"; break;
-		case 37: return "Jump"; break;
-		case 38: return "Light Control"; break;
-		case 39: return "Magnetize"; break;
-		case 40: return "MACHINE EMPATHY"; break;
-		case 41: return "Mechanical Intuition"; break;
-		case 42: return "Presence Detection"; break;
-		case 43: return "Corrosion"; break;
-		case 44: return "Past Touch"; break;
-		case 45: return "Puppeteer"; break;
-		case 46: return "Push Mutant Powers"; break;
-		case 47: return "Pyrokinesis"; break;
-		case 48: return "Radioactivity"; break;
-		case 49: return "Regeneration"; break;
-		case 50: return "Rubbery Bones"; break;
-		case 51: return "Screech"; break;
-		case 52: return "Sculpt"; break;
-		case 53: return "Second Skin"; break;
-		case 54: return "Shrinking"; break;
-		case 55: return "Slippery Skin"; break;
-		case 56: return "Speed"; break;
-		case 57: return "Spikes"; break;
-		case 58: return "Time Stasis"; break;
-		case 59: return "Stench"; break;
-		case 60: return "MACHINE EMPATHY"; break;
-		case 61: return "Telekinesis"; break;
-		case 62: return "Teleportation"; break;
-		case 63: return "Toxic Metabolism"; break;
-		case 64: return "Transmutation"; break;
-		case 65: return "Stretchy"; break;
-		case 66: return "Ventriloquist"; break;
-		case 67: return "Time Speed"; break;
-		case 68: return "Weapon Finder"; break;
-		case 69: return "Gamemaker"; break;
-		case 70: return "Infinite Ammo"; break;
-		case 71: return "Head Games"; break;
-		case 72: return "Hurricane Lungs"; break;
-		case 73: return "Spread Hate"; break;
-		case 74: return "Spread Love"; break;
-		case 75: return "Mind Wisper"; break;
-		case 76: return "Invisibility"; break;
-		case 77: return "Materialize Weapons"; break;
-		case 78: return "Twin Duplication"; break;
-		case 79: return "Create Body Parts"; break;
-		case 80: return "MACHINE EMPATHY"; break;
-		case 81: return "Portal"; break;
-		case 82: return "Blood Lust"; break;
-		case 83: return "Muscle Growth"; break;
-		case 84: return "Fright"; break;
-		case 85: return "Sleep"; break;
-		case 86: return "Refractive Skin"; break;
-		case 87: return "Earth Glide"; break;
-		case 88: return "Bull's Eye"; break;
-		case 89: return "Obliterate"; break;
-		case 90: return "Disintegration"; break;
-		case 91: return "Copy Mutant Power"; break;
-		case 92: return "Bone Manipulation"; break;
-		case 93: return "Fusion"; break;
-		case 94: return "Animated Hair"; break;
-		case 95: return "Self Destruct"; break;
-		case 96: return "Night Vision"; break;
-		case 97: return "Telescopic Vision"; break;
-		case 98: return "Astral Projection"; break;
-		case 99: return "Telepathy"; break;
-		case 100: return "MACHINE EMPATHY"; break;
+string get_service(int *index) {
+	*index = rand()%8;
+	string service;
+	switch (*index) {
+		case 0: service = "Armed Forces"; break;
+		case 1: service = "Central Processing Unit"; break;
+		case 2: service = "Housing Preservation and Development & Mind Control"; break;
+		case 3: service = "Internal Security"; break;
+		case 4: service = "Power Services"; break;
+		case 5: service = "Production, Logistics & Commissary"; break;
+		case 6: service = "Research and Design"; break;
+		case 7: service = "Technical Services"; break;
 	}
+	return service;
+}
+
+string getSS(int sg) {
+	int SSroll;// = rand() % 19 + 1;
+	string SS;
+	bool spy = false;
+	if (spy)	SSroll = rand()%19+1;
+	else 		SSroll = rand()%17+1;
+	sg++;
+	switch (sg) {
+		case 1: 
+		switch (SSroll) {
+			case 1: case 2: case 3: SS = "Anit-Mutant"; break;
+			case 4: case 5: case 6: SS = "Death Leopard"; break;
+			case 7: case 8: case 9: SS = "Frankenstein Destroyers"; break;
+			case 10: case 11: case 12: SS = "PURGE"; break;
+			case 13: SS = "Communists"; break;
+			case 14: SS = "FCCC-P"; break;
+			case 15: SS = "Free Enterprise"; break;
+			case 16: SS = "Pro Tech"; break;
+			case 17: SS = "Psion"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 2:  
+		switch (SSroll) {
+			case 1: case 2: case 3: case 4: SS = "Computer Phreaks"; break;
+			case 5: case 6: case 7: case 8: SS = "Corpore Metal"; break;
+			case 9: case 10: SS = "FCCC-P"; break;
+			case 11: case 12: SS = "Sierra Club"; break;
+			case 13: SS = "Anti-Mutant"; break;
+			case 14: SS = "Communists"; break;
+			case 15: SS = "Pro Tech"; break;
+			case 16: SS = "Psion"; break;
+			case 17: SS = "PURGE"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 3:  
+		switch (SSroll) {
+			case 1: case 2: SS = "Anti-Mutant"; break;
+			case 3: case 4: SS = "FCCC-P"; break;
+			case 5: case 6: case 7: SS = "Humanists"; break;
+			case 8: case 9: case 10: case 11: SS = "Romantics"; break;
+			case 12: case 13: SS = "Sierra Club"; break;
+			case 14: SS = "Communists"; break;
+			case 15: SS = "Mystics"; break;
+			case 16: SS = "Psion"; break;
+			case 17: SS = "PURGE"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 4:  
+		switch (SSroll) {
+			case 1: case 2: case 3: SS = "Anti-Mutant"; break;
+			case 4: case 5: case 6: SS = "Death Leopard"; break;
+			case 7: case 8: case 9: SS = "FCCC-P"; break;
+			case 10: case 11: case 12: SS = "Frankenstein Destroyers"; break;
+			case 13: SS = "Communists"; break;
+			case 14: SS = "Free Enterprise"; break;
+			case 15: SS = "Pro Tech"; break;
+			case 16: SS = "Psion"; break;
+			case 17: SS = "PURGE"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 5:  
+		switch (SSroll) {
+			case 1: case 2: case 3: case 4: case 5: SS = "Free Enterprise"; break;
+			case 6: case 7: case 8: case 9: SS = "Humanists"; break;
+			case 10: case 11: SS = "Mystics"; break;
+			case 12: case 13: SS = "Romantics"; break;
+			case 14: SS = "Communists"; break;
+			case 15: SS = "Pro Tech"; break;
+			case 16: SS = "Psion"; break;
+			case 17: SS = "Sierra Club"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 6:  
+		switch (SSroll) {
+			case 1: case 2: SS = "Computer Phreaks"; break;
+			case 3: case 4: SS = "Death Leopard"; break;
+			case 5: case 6: SS = "FCCC-P"; break;
+			case 7: case 8: SS = "Sierra Club"; break;
+			case 9: case 10: SS = "Free Enterprise"; break;
+			case 11: case 12: SS = "Mystics"; break;
+			case 13: case 14: SS = "Pro Tech"; break;
+			case 15: case 16: SS = "PURGE"; break;
+			case 17: SS = "Communists"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 7:  
+		switch (SSroll) {
+			case 1: case 2: case 3: SS = "Computer Phreaks"; break;
+			case 4: case 5: case 6: SS = "Corpore Metal"; break;
+			case 7: case 8: case 9: SS = "Pro Tech"; break;
+			case 10: case 11: case 12: SS = "Psion"; break;
+			case 13: case 14: case 15: SS = "PURGE"; break;
+			case 16: SS = "FCCC-P"; break;
+			case 17: SS = "Communists"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		case 8:  
+		switch (SSroll) {
+			case 1: case 2: SS = "Computer Phreaks"; break;
+			case 3: case 4: SS = "Corpore Metal"; break;
+			case 5: case 6: SS = "Death Leopard"; break;
+			case 7: case 8: SS = "Frankenstein Destroyers"; break;
+			case 9: case 10: SS = "Mystics"; break;
+			case 11: case 12: SS = "Pro Tech"; break;
+			case 13: case 14: SS = "Psion"; break;
+			case 15: case 16: SS = "Sierra Club"; break;
+			case 17: SS = "Communists"; break;
+			case 18: SS = "Illuminati*"; break;
+			case 19: SS = "Undercover Agent**"; break;
+		} break;
+		default: assert(0); break;
+	}
+	return SS;
 }

@@ -16,7 +16,7 @@ PC::PC(string player, string name, string sector) {
 	Generate(player,name,sector);
 }
 
-void PC::Get_from_file(ifstream file) {
+void PC::Get_from_file(ifstream& file) {
 	
 }
 
