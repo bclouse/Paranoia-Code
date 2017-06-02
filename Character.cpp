@@ -190,36 +190,38 @@ string get_skill_names(int main, int sub) {
 			}
 			break;
 	}
+	return "\0";
 }
 
 string getM() {
-	long int dummy, end;
-	int size = 0;
-	char c, str[50];
+	string output = rand_file_line(true,"assets//Mutations.txt");
+	// long int dummy, end;
+	// int size = 0;
+	// char c, str[50];
 
-	FILE *fp = fopen("assets//Mutations.txt","r" );
-	fscanf(fp,"%c", &c);
-	size++;
-	while (c != '\n') {
-		fscanf(fp,"%c", &c);
-		size++;
-	}
-	fseek(fp, 0L, SEEK_END);
-	end = ftell(fp)+1;
+	// FILE *fp = fopen("assets//Mutations.txt","r" );
+	// fscanf(fp,"%c", &c);
+	// size++;
+	// while (c != '\n') {
+	// 	fscanf(fp,"%c", &c);
+	// 	size++;
+	// }
+	// fseek(fp, 0L, SEEK_END);
+	// end = ftell(fp)+1;
 
-	dummy = (rand()%(end/size))*size;
-	fseek(fp, dummy, SEEK_SET);
-	fgets(str,50,fp);
+	// dummy = (rand()%(end/size))*size;
+	// fseek(fp, dummy, SEEK_SET);
+	// fgets(str,50,fp);
 
 
-	string output = str;
-	for (int i = 0; i < output.size(); i++) {
-		if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
-			output[i] = '\0';
-		} else if (i == output.size()-1) {
-			output[i] = '\0';
-		}
-	}
+	// string output = str;
+	// for (int i = 0; i < output.size(); i++) {
+	// 	if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
+	// 		output[i] = '\0';
+	// 	} else if (i == output.size()-1) {
+	// 		output[i] = '\0';
+	// 	}
+	// }
 	return output;
 }
 
@@ -359,4 +361,38 @@ string getSS(int sg) {
 		default: assert(0); break;
 	}
 	return SS;
+}
+
+string rand_file_line(bool same_length, string file_name) {		//same_length==true when all of the lines in a file are the same length
+	string output;
+	ifstream file(file_name);
+	long int length = 1, size, pos;
+	char c;
+	// streamoff pos;
+
+
+	if (file.is_open()) {
+		getline(file,output);
+		length = output.size()+1;
+		file.seekg(0, file.end);
+		size = (int)file.tellg()+1;
+		pos = (rand()%(size/length))*length;
+		file.seekg(pos, file.beg);
+
+		// printf("Line Length: %ld\nFile Size: %ld\nRand Position: %ld\n", length, size, pos);
+		getline(file,output);
+
+		for (int i = 0; i < output.size(); i++) {
+			if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
+				output[i] = '\0';
+			} else if (i == output.size()-1) {
+				output[i] = '\0';
+			}
+		}
+
+		file.close();
+	} else {
+		cout << "FILE (" << file_name << ") DOES NOT EXIST" << endl;
+	}
+	return output;
 }
