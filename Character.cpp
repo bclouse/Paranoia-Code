@@ -45,7 +45,7 @@ NPC::NPC(string name, string clearance,string sector) {
 	}
 
 	Mutant = getM();
-	get_power(Power);
+	// get_power(Power);
 	Access[0] = Access[1] = ROLL/5;
 }
 
@@ -82,8 +82,10 @@ int str2int(string input) {
 	return output;
 }
 
-string get_rand_name(ifstream& fp) {
+string get_rand_name() {
 	string test;
+	ifstream fp;
+	fp.open("assets//Name_List.txt");
 
 	fp.seekg(16*(rand()%2400),ios::beg);
 	fp >> test;
@@ -101,16 +103,15 @@ vector<string> get_files(ifstream& file) {
 	return output;
 }
 
-void get_power(int* arr) {
+int get_power() {
 	int dummy = ROLL;
 	if (dummy < 8) {
-		arr[0] = 8;
+		return 8;
 	} else if (dummy > 18) {
-		arr[0] = 18;
+		return 18;
 	} else {
-		arr[0] = dummy;
+		return dummy;
 	}
-	arr[1] = arr[0];
 }
 
 string get_skill_names(int main, int sub) {

@@ -4,17 +4,28 @@
 //	PC Class
 //======================================================
 
-void PC::generate(string player, string name, string sector) {
+void PC::generate(string player, string name, string sector,string clearance) {
 	int index;
+	Service.clear();
+	Society.clear();
+
 	Player = player;
 	Name = name;
-	Clearance = "R";
+	Clearance = clearance;
 	Sector = sector;
 	Clone = 1;
+	Degree = 1;
 	Service.push_back(get_service(&index));
 	Society.push_back(getSS(index));
 	Mutant = getM();
 	store = true;
+	Treason = 1;
+	Commendation = 0;
+	Credits[0] = 1000;
+	Credits[1] = 0;
+	Power[0] = Power[1] = get_power();
+	Access[0] = Access[1] = rand()%5+1;
+	Perversity = 25;
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 12; j++) {
 			Skills[i][j].name = get_skill_names(i,j);
@@ -27,10 +38,13 @@ void PC::generate(string player, string name, string sector) {
 	Category[3].name = "Hardware";
 	Category[4].name = "Software";
 	Category[5].name = "Wetware";
+	Category[6].name = "Uncommon";
+	Category[7].name = "Unlikely";
+	Category[8].name = "Unhealthy";
 }
 
-PC::PC(string player, string name, string sector) {
-	generate(player,name,sector);
+PC::PC(string player, string name, string sector,string clearance) {
+	generate(player,name,sector,clearance);
 }
 
 void PC::get_from_file(ifstream& file) {
@@ -48,10 +62,33 @@ string PC::get_name(bool full_name) {
 	return name;
 }
 
-void PC::display() {
+void PC::display(bool see_skills,bool see_secret,bool items) {
+	cout << "=========================================" << endl;
 	cout << Player << "'s character is: ";
 	cout << get_name(true) << endl;
-
+	printf("Service Group:  %s",Service[0].c_str());
+	for (int i = 1; i < Service.size(); i++) {
+		printf(" << %s",Service[i].c_str());
+	}
+	cout << endl;
+	if (see_skills) display_skills(false);
+	if (see_secret) {
+		printf("Secret Society: %s",Society[0].c_str());
+		for (int i = 1; i < Society.size(); i++) {
+			printf(" << %s",Society[i].c_str());
+		}
+		cout << endl;
+		printf("Degree:________ %d\n", Degree);
+		printf("Mutant Ability: %s\n", Mutant.c_str());
+		// if (see_skills) display_skills(true);
+		printf("Perversity:____ %d\n", Perversity);
+		printf("Power:_________ %d/%d\n", Power[0], Power[1]);
+		printf("Access:________ %d/%d\n", Access[0], Access[1]);
+		printf("Credits:_______ %d/%d\n", Credits[0], Credits[1]);
+		printf("Treason:_______ -%d, +%d\n", Treason, Commendation);
+		//if (items) display_items();
+	}
+	cout << "=========================================" << endl;
 }
 
 void PC::set_skills() {
@@ -82,7 +119,7 @@ void PC::set_skills() {
 	}
 }
 
-void PC::display_skills() {
+void PC::display_skills(bool secret) {
 	for (int i = 0; i < 12; i++) {
 		if (i == 0) {
 			cout << setfill(' ');
@@ -148,6 +185,6 @@ void Party::gen_MBD() {
 
 void Party::display() {
 	for (int i = 0; i < party.size(); i++) {
-		party.at(i)->display();
+		party.at(i)->display(false,true,false);
 	}
 }

@@ -37,7 +37,7 @@ class PC {
 	vector<string> Society;		//Secret Society in order of involvement
 	vector<string> Items;		//Items (@ = Assigned, ? = Controverse, ! = Contraband)
 
-	skill Category[6];			//Stores each main skills' names and values
+	skill Category[9];			//Stores each main skills' names and values
 	skill Skills[6][12];			//Stores each sub-skills' names and values
 	vector<skill> Uncommon;		//Stores the uncommon skills
 	vector<skill> Unlikely;		// ""        unlikely	""
@@ -50,17 +50,18 @@ class PC {
 	int Power[2];					//Stores Power ranking (current/max)
 	int Access[2];					//Stores Access ranking (current/max)
 	int Credits[2];				//Stores credits and plasticreds
+	int Perversity;				//Number of Perversity points
 
-	bool store;
+	bool store;						//Determines if the character's data is to be stored when the program ends
 	public:
-		PC(string, string, string);
+		PC(string, string, string,string);
 		//~PC();
-		void generate(string,string,string);
+		void generate(string,string,string,string);
 		void get_from_file(ifstream&);
 		string get_name(bool);
-		void display();
+		void display(bool,bool,bool);
 		void set_skills();
-		void display_skills();
+		void display_skills(bool);
 	friend class Party;
 };
 
@@ -138,10 +139,10 @@ class Settings {
 
 int str2int(string);
 string get_skill_names(int,int);
-string get_rand_name(ifstream&);
+string get_rand_name();
 string getM();
 vector<string> get_files(ifstream&);
-void get_power(int*);
+int get_power();
 string get_service(int*);
 string getSS(int);
 string rand_file_line(bool, string);
