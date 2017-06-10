@@ -27,6 +27,7 @@ void PC::generate(string player, string name, string sector,string clearance) {
 	Access[0] = Access[1] = rand()%5+1;
 	Perversity = 25;
 	for (int i = 0; i < 6; i++) {
+		Category[i].value = 0;
 		for (int j = 0; j < 12; j++) {
 			Skills[i][j].name = get_skill_names(i,j);
 			Skills[i][j].value = 0;
@@ -51,11 +52,12 @@ void PC::get_from_file(ifstream& file) {
 	
 }
 
-string PC::get_name(bool full_name) {
-	assert (Clone < 10);
+string PC::get_name(bool full_name, bool clone) {
+	// assert (Clone < 10);
 	string name;
 	if (full_name) {
-		name = Name+'-'+Clearance+'-'+Sector+'-'+to_string(Clone);
+		name = Name+'-'+Clearance+'-'+Sector;
+		if (clone) name += '-'+to_string(Clone);
 	} else {
 		name = Name;
 	}
@@ -65,7 +67,7 @@ string PC::get_name(bool full_name) {
 void PC::display(bool see_skills,bool see_secret,bool items) {
 	cout << "=========================================" << endl;
 	cout << Player << "'s character is: ";
-	cout << get_name(true) << endl;
+	cout << get_name(true,true) << endl;
 	printf("Service Group:  %s",Service[0].c_str());
 	for (int i = 1; i < Service.size(); i++) {
 		printf(" << %s",Service[i].c_str());
@@ -149,6 +151,92 @@ void PC::display_skills(bool secret) {
 	}
 }
 
+void PC::save() {
+	ifstream blank ("assets//Blank_Character.txt");
+	string dummy = "assets//characters//";
+	ofstream file;
+	int rewrite;
+	int num;
+	char c;
+
+	dummy += get_name(false,false)+".txt";
+	file.open(dummy);
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Player << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Name << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Clearance << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Sector << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Clone << endl;
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Service[0];
+	for (int i = 1; i < Service.size(); i++) {file << ", " << Service[i];}
+									file << endl;
+	for (int j = 0; j < 6; j++) {
+		getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << setw(3) << setfill(' ') << left << Category[j].value << resetiosflags(ios::showbase);
+		rewrite = 0;
+		for (int i = 0; i < 12; i++) {
+			if (!Skills[j][i].name.empty()) {
+				c = 'a' + Skills[j][i].value;
+				file << c;
+				if (i >= 10 || (j != 2 && i >= 8)) rewrite++;				
+			} else {
+				file << '/';
+			}
+
+			
+		}
+		if (rewrite > 0) {
+			if (j == 2)	num = 10;
+			else			num = 8;
+			for (int k = num; k < num+rewrite; k++) {
+				if (k > num)	file << ", " << Skills[j][k].name;
+				else				file << Skills[j][k].name;
+			}
+		}
+		file << endl;
+	}
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Society[0];
+	for (int i = 1; i < Society.size(); i++) {file << ", " << Society[i];}
+									file << endl;
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Mutant << endl;
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy;
+	for (int i = 0; i < Uncommon.size(); i++) {
+		if (i != 0)	file << ", ";
+		file << Uncommon[i].name << "/" << Uncommon[i].value;
+	}
+	file << endl;
+	// cout << "uncommon" << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy;
+	for (int i = 0; i < Unlikely.size(); i++) {
+		if (i != 0)	file << ", ";
+		file << Unlikely[i].name << "/" << Unlikely[i].value;
+	}
+	file << endl;
+	// cout << "unlikely" << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy;
+	for (int i = 0; i < Unhealthy.size(); i++) {
+		if (i != 0)	file << ", ";
+		file << Unhealthy[i].name << "/" << Unhealthy[i].value;
+	}
+	file << endl;
+	// cout << "uncommon" << endl;
+
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Power[0] << '/' << Power[1] << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Access[0] << '/' << Access[1] << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Credits[0] << '/' << Credits[1] << endl;
+	getline(blank,dummy);	dummy.erase(dummy.end()-1);	file << dummy << Perversity << endl;
+	getline(blank,dummy);	file << dummy << endl;
+	for (int i = 0; i < Items.size();i++) {
+		file << Items[i] << endl;
+	}
+
+	blank.close();
+	file.close();
+}
+
 //======================================================
 //	Party Class
 //======================================================
@@ -159,7 +247,7 @@ void Party::add_member(PC* member) {
 
 void Party::del_member(string member) {
 	for (int i = 0; i < party.size(); i++) {
-		if (member.compare(party.at(i)->get_name(false))) {
+		if (member.compare(party.at(i)->get_name(false,false))) {
 			member.erase(member.begin()+i);
 			break;
 		}

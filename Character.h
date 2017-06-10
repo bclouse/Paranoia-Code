@@ -58,10 +58,11 @@ class PC {
 		//~PC();
 		void generate(string,string,string,string);
 		void get_from_file(ifstream&);
-		string get_name(bool);
+		string get_name(bool,bool);
 		void display(bool,bool,bool);
 		void set_skills();
 		void display_skills(bool);
+		void save();
 	friend class Party;
 };
 
@@ -146,5 +147,6 @@ int get_power();
 string get_service(int*);
 string getSS(int);
 string rand_file_line(bool, string);
+string delete_endline(string);
 
 #endif

@@ -215,13 +215,9 @@ string getM() {
 	// fgets(str,50,fp);
 
 
-	// string output = str;
+	// string str = output;
 	// for (int i = 0; i < output.size(); i++) {
-	// 	if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
-	// 		output[i] = '\0';
-	// 	} else if (i == output.size()-1) {
-	// 		output[i] = '\0';
-	// 	}
+		
 	// }
 	return output;
 }
@@ -385,9 +381,7 @@ string rand_file_line(bool same_length, string file_name) {		//same_length==true
 
 		for (int i = 0; i < output.size(); i++) {
 			if (output[i] == ' ' && output[i+1] == ' ' && i != output.size()-1) {
-				output[i] = '\0';
-			} else if (i == output.size()-1) {
-				output[i] = '\0';
+				output.erase(output.begin()+i,output.end());
 			}
 		}
 
@@ -396,4 +390,12 @@ string rand_file_line(bool same_length, string file_name) {		//same_length==true
 		cout << "FILE (" << file_name << ") DOES NOT EXIST" << endl;
 	}
 	return output;
+}
+
+string delete_endline(string str) {
+	string dummy = str;
+
+	dummy.erase(dummy.end());
+
+	return dummy;
 }
